@@ -1,2 +1,2 @@
-# Example
-An example greeter plugin
+# SacredOil
+Notifies the player when flamberg bracelet has broken.
