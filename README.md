@@ -1,2 +1,2 @@
 # SacredOil
-Notifies the player when flamberg bracelet has broken.
+Notifies the player when flamtaer bracelet has broken.
