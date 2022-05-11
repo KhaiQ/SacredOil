@@ -8,12 +8,21 @@ import net.runelite.client.config.ConfigItem;
 public interface SacredOilConfig extends Config
 {
 	@ConfigItem(
-		keyName = "greeting",
-		name = "Welcome Greeting",
-		description = "The message to show to the user when they login"
+		keyName = "braceletcounter",
+		name = "Flamtaer Bracelet Counter",
+		description = "Configures if Flamtaer Bracelet Counter is enabled.",
+		position = 1
 	)
-	default String greeting()
+	default boolean braceletCounter()
 	{
-		return "Hello";
+		return true;
 	}
+
+	@ConfigItem(
+			keyName = "bracletnotify",
+			name = "Flamtaer Bracelet Notification",
+			description = "Configures if Flamtaer Braclet notification is enabled.",
+			position = 2
+	)
+	default boolean braceletNotify() { return true; }
 }
