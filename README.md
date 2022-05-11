@@ -1,2 +1,2 @@
 # SacredOil
-Notifies the player when flamtaer bracelet has broken.
+Shows useful information while creating Sacred Oil
