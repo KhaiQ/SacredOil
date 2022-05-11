@@ -10,7 +10,7 @@ public interface SacredOilConfig extends Config
 	@ConfigItem(
 		keyName = "braceletcounter",
 		name = "Flamtaer Bracelet Counter",
-		description = "Configures if Flamtaer Bracelet Counter is enabled.",
+		description = "Displays Flamtaer Bracelet Charge Counter",
 		position = 1
 	)
 	default boolean braceletCounter()
@@ -21,7 +21,7 @@ public interface SacredOilConfig extends Config
 	@ConfigItem(
 			keyName = "bracletnotify",
 			name = "Flamtaer Bracelet Notification",
-			description = "Configures if Flamtaer Braclet notification is enabled.",
+			description = "Notifies User when Flamtaer Bracelet breaks",
 			position = 2
 	)
 	default boolean braceletNotify() { return true; }

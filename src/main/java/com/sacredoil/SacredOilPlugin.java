@@ -5,11 +5,14 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.client.Notifier;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -38,6 +41,9 @@ public class SacredOilPlugin extends Plugin {
 	@Inject
 	private ClientThread clientThread;
 
+	@Inject
+	private Notifier notifier;
+
 	private SacredOil counterbox;
 
 	private SacredOil temp;
@@ -47,7 +53,7 @@ public class SacredOilPlugin extends Plugin {
 
 	// Checks glove equipment slot when starting plugin
 	@Override
-	protected void startUp() throws Exception {
+	protected void startUp() {
 		clientThread.invokeLater(() -> {
 			final ItemContainer container = client.getItemContainer(InventoryID.EQUIPMENT);
 
@@ -59,7 +65,7 @@ public class SacredOilPlugin extends Plugin {
 
 	// Removes the counter when stopping plugin
 	@Override
-	protected void shutDown() throws Exception {
+	protected void shutDown() {
 		removeInfobox();
 		counterbox = null;
 	}
@@ -75,19 +81,36 @@ public class SacredOilPlugin extends Plugin {
 	}
 
 	// Updates value on counter based off of game messages
+	// If Flamtaer Bracelet breaks while Windows is not focused on RuneLite,
+	// a Windows Notification will be sent to inform the user.
 	// NOTE: For charges 80-2, messages are catagorized as SPAM,
-	// 		 Charges 1-0 are considered GAMEMESSAGE
+	// 		 charges 1-0 are considered GAMEMESSAGE
 	@Subscribe
 	public void onChatMessage(ChatMessage event) {
 		final String prompt = "Your Flamtaer bracelet helps you build the temple quicker.";
 		if((event.getType() == ChatMessageType.SPAM || event.getType() == ChatMessageType.GAMEMESSAGE) && event.getMessage().contains(prompt)) {
-			if(!event.getMessage().replaceAll("[^0-9]", "").equals("")){
-				charge = Integer.parseInt(event.getMessage().replaceAll("[^0-9]", ""));
+			final String num = event.getMessage().replaceAll("[^0-9]", "");
+
+			if(!num.equals("")) {
+				charge = Integer.parseInt(num);
 			}
-			else
+			else {
 				charge = 0;
+				if(config.braceletNotify())
+					notifier.notify("Your Flamtaer Bracelet has broken!");
+			}
 			updateInfobox(charge);
 		}
+	}
+
+	// Adds/removes Flamtaer Bracelet counter on/off based on config state
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event) {
+		if(config.braceletCounter()) {
+			updateInfobox(charge);
+			return;
+		}
+		removeInfobox();
 	}
 
 	// Checks if glove equipment matches Flamtaer Bracelet Id
@@ -104,9 +127,11 @@ public class SacredOilPlugin extends Plugin {
 	// Updates the value of the counter
 	private void updateInfobox(int charge) {
 		removeInfobox();
-		final BufferedImage image = itemManager.getImage(ItemID.FLAMTAER_BRACELET, charge, false);
-		counterbox = new SacredOil(this, 21180, charge, "Bracelet", image);
-		infoBoxManager.addInfoBox((counterbox));
+		if(config.braceletCounter()) {
+			final BufferedImage image = itemManager.getImage(ItemID.FLAMTAER_BRACELET, charge, false);
+			counterbox = new SacredOil(this, 21180, charge, "Charges", image);
+			infoBoxManager.addInfoBox((counterbox));
+		}
 	}
 
 	// Removes the counter
