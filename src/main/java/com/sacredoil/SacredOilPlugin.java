@@ -23,7 +23,7 @@ import java.awt.image.BufferedImage;
 
 @Slf4j
 @PluginDescriptor(
-	name = "1 Sacred Oil"
+	name = "Sacred Oil"
 )
 public class SacredOilPlugin extends Plugin {
 	@Inject
