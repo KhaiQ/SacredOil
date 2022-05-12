@@ -74,10 +74,7 @@ public class SacredOilPlugin extends Plugin {
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		if(event.getItemContainer() != client.getItemContainer(InventoryID.EQUIPMENT)){
-			return;
-		}
-		checkHand(event.getItemContainer().getItems());
+		startUp();
 	}
 
 	// Updates value on counter based off of game messages
@@ -89,13 +86,12 @@ public class SacredOilPlugin extends Plugin {
 	public void onChatMessage(ChatMessage event) {
 		final String prompt = "Your Flamtaer bracelet helps you build the temple quicker.";
 		if((event.getType() == ChatMessageType.SPAM || event.getType() == ChatMessageType.GAMEMESSAGE) && event.getMessage().contains(prompt)) {
-			final String num = event.getMessage().replaceAll("[^0-9]", "");
 
-			if(!num.equals("")) {
-				charge = Integer.parseInt(num);
-			}
-			else {
-				charge = 0;
+			final String num = event.getMessage().replaceAll("[^0-9]", "");
+			charge = Integer.parseInt(num.replaceAll("^0+(?!$)", ""));
+
+			if(charge == 0) {
+				charge = 80;
 				if(config.braceletNotify())
 					notifier.notify("Your Flamtaer Bracelet has broken!");
 			}
@@ -107,7 +103,7 @@ public class SacredOilPlugin extends Plugin {
 	@Subscribe
 	public void onConfigChanged(ConfigChanged event) {
 		if(config.braceletCounter()) {
-			updateInfobox(charge);
+			startUp();
 			return;
 		}
 		removeInfobox();
@@ -119,9 +115,9 @@ public class SacredOilPlugin extends Plugin {
 	private void checkHand(final Item[] items) {
 		if(items[EquipmentInventorySlot.GLOVES.getSlotIdx()].getId() == 21180) {
 			updateInfobox(charge);
+			return;
 		}
-		else
-			removeInfobox();
+		removeInfobox();
 	}
 
 	// Updates the value of the counter
