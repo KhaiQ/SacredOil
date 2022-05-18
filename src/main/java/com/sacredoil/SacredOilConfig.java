@@ -1,8 +1,6 @@
 package com.sacredoil;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.*;
 
 @ConfigGroup("example")
 public interface SacredOilConfig extends Config
@@ -25,4 +23,31 @@ public interface SacredOilConfig extends Config
 			position = 2
 	)
 	default boolean braceletNotify() { return true; }
+
+	@ConfigItem(
+			keyName = "sanctitycheck",
+			name = "Sanctity Notification",
+			description = "Toggles Sanctity Notifications",
+			position = 3
+	)
+	default boolean sanctityCheck() { return true; }
+
+	@ConfigItem(
+			keyName = "sanctitynotify",
+			name = "Sanctity Level",
+			description = "Notifies User when Sanctity reaches spcified level",
+			position = 4
+	)
+	@Units(Units.PERCENT)
+	@Range(max = 100)
+	default int sanctityNotify() { return 100; }
+
+	@ConfigItem(
+			keyName = "sanctifydelay",
+			name = "Sanctity Notification Delay",
+			description = "Time until a notification is sent",
+			position = 5
+	)
+	@Units(Units.MILLISECONDS)
+	default int getSanctityDelay() { return 1000; }
 }
