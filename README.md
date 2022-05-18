@@ -1,2 +1,4 @@
 # SacredOil
-Shows useful information while creating Sacred Oil
+Features
+- Flamtaer Braclet Counter and Notifications
+- Adjustable Sanctity Notifications
