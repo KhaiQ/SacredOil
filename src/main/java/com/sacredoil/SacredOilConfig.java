@@ -2,7 +2,7 @@ package com.sacredoil;
 
 import net.runelite.client.config.*;
 
-@ConfigGroup("example")
+@ConfigGroup("sacredoil")
 public interface SacredOilConfig extends Config
 {
 	@ConfigItem(

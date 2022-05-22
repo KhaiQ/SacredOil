@@ -24,7 +24,10 @@ import java.time.Instant;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Sacred Oil"
+	name = "Sacred Oil",
+	description = "Send a notification when sanctity reaches threshold and/or adds a Flamtaer Bracelet counter",
+	tags = {"notifications", "oil"},
+	enabledByDefault = false
 )
 public class SacredOilPlugin extends Plugin {
 	@Inject
